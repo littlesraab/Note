@@ -1,0 +1,8 @@
+数值的扩展
+  二进制和八进制表示法:前缀0b(0B)代表二进制,0o(0O)代表八进制.
+  Number.isFinite(),Number.isNaN():Number.isFinite()检查一个数值是否有限,对于非数值一律返回false,Number.isNaN()检查数值是否为NaN.
+  Number.parseInt(),Number.parseFloat():对应原来的parseInt()和parseFloat().
+  Number.isInteger():用于判断一个数值是否为整数.
+  安全整数和Number.isSafeInteger():ES6引入Number.MAX_SAFE_INTEGER(2^53)和Number.MIN_SAFE_INTEGER(-2^53)两个常量,JS能够准确表示的整数范围,
+                                  Number.isSafeInteger()用来判断一个整数是否落在这个范围之内.
+  
