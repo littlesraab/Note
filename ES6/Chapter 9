@@ -6,3 +6,6 @@ Symbol
                     运算符,会被认作字符串,所以在对象的内部使用Symbol值定义属性时必须放在方括号之中.
   属性名的遍历:Symbol作为属性名是不会出现在for...in、for...of循环中,也不会被Object.keys()、Object.getOwnPropertyNames()、JSON.stringify()返回,但
              它不是私有属性,可用Object.getOwnPropertySymbols()获取指定对象的所有Symbol属性名.
+  Symbol.for(),Symbol.keyFor():Symbol.for()接受一个字符串作为参数,然后搜索有没有以该参数为名称的Symbol值,如果有就返回这个Symbol值,否则就新建并返回
+                               一个以该字符串为名称的Symbol值,Symbol.keyFor()返回一个已登记的Symbol类型值的key,是全局环境的.
+  内置的Symbol值:ES6提供了11个内置的Symbol值.
