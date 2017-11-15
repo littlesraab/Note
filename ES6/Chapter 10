@@ -1,0 +1,9 @@
+Set和Map数据结构
+  Set:是ES6提供新的数据结构,它类似于数组,但是成员的值都是唯一的,无重复值,Set本身是一个构造函数,用来生成Set数据结构,Set函数可以接受一个数组(或者具有
+      iterable接口的其他数据结构)作为参数来初始化,向Set加入值的时候,不会发生类型转换,而且两个对象总是不相等的.
+  Set实例的属性和方法:Set.prototype.constructor指向Set函数,Set.prototype.size返回Set实例的成员总数,add(value)添加某个值,delete(value)删除某个值,
+                     has(value)返回一个布尔值表示该值是否为Set的成员,clear()清除所有成员,keys()返回键名的遍历器,values()返回键值的遍历器,entries()
+                     返回键值对的遍历器,forEach()使用回调函数遍历每个成员,遍历主要使用for...of.
+  WeakSet:WeakSet结构与Set类似,也是不重复的值的集合,但是其成员只能是对象,不能是其他类型的值,其次WeakSet中的对象都是弱引用,即垃圾回收机制不考虑WeakSet
+          对该对象的引用,即如果其他对象都不再引用该对象,那么垃圾回收机制会自动回收该对象所占用的内存,不考虑该对象还存在于WeakSet之中,所以WeakSet的成员
+          是不适合引用的,适合临时存放一组对象,以及存放跟对象绑定的信息,ES6规定WeakSet不可遍历.
