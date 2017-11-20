@@ -1,0 +1,7 @@
+Reflect
+  概述:Reflect对象与Proxy对象一样是ES6为了操作对象而提供的新API,将Object对象的一些明显属于语言内部的方法放到Reflect对象上,即从Reflect对象上可以拿到语
+       言内部的方法,也修改某些Object方法的返回结果,让其变得更合理,让Object操作都变成函数行为,而且Reflect对象的方法与Proxy对象的方法一一对应,只要是
+       Proxy对象的方法,就能在Reflect对象上找到对应的方法,方便Proxy对象的应用.
+  静态方法:Reflect对象一共有13个静态方法.
+    Reflect.get(target, name, receiver):查找并返回target对象的name属性,如果没有该属性则返回undefined,若name属性部署了读取函数(getter),则读取函数的
+                                        this绑定receiver,若第一个参数不是对象,Reflect.get方法会报错.
