@@ -19,3 +19,16 @@ Promise对象
    Promise.prototype.then():then方法是定义在原型对象Promise.prototype上的,它的作用是为Promise实例添加状态改变时的回调函数,then方法的第一个参数是
                             resolved状态的回调函数,第二个参数(可选)是rejected状态的回调函数,then方法返回的是一个新的Promise实例(不是原来那个Promise
                             实例),因此可以采用链式写法,即then方法后面再调用另一个then方法.
+   Promise.prototype.catch():为.then(null, rejection)的别名,用于指定发生错误时的回调函数(promise.catch(function(error) {console.log(error);});),
+                             ,Promis对象的错误具有"冒泡"性质,会一直向后传递直到被捕获为止,一般不要在then方法里面定义Reject状态的回调函数(即then的第二
+                             个参数),应总是使用catch方法,若没有使用catch方法指定错误处理的回调函数,Promise对象抛出的错误不会传递到外层代码,即不会有任
+                             何反应,一般Promise对象后面要跟catch方法,这样可以处理 Promise 内部发生的错误,catch方法返回的还是一个Promise对象,因此后面
+                             还可以接着调用then方法.
+   Promise.all():用于将多个Promise实例,包装成一个新的Promise实例,参数如果不是Promise,就会先调用下面讲到的Promise.resolve方法,将参数转为Promise实例,再
+                 进一步处理(Promise.all方法的参数可以不是数组,但必须具有 Iterator 接口,且返回的每个成员都是Promise实例),若所有参数的状态都变成
+                 fulfilled,新Promise的状态才会变成fulfilled,所有参数的返回值组成一个数组传递给p的回调函数,而参数之中有一个被rejected,新Promise的状态
+                 就变成rejected,而第一个被reject的实例的返回值会传递给新Promise的回调函数,若作为参数的Promise实例自己定义了catch方法,若它被rejected,
+                 并不会触发Promise.all()的catch方法.
+   Promise.race():将多个Promise实例包装成一个新的Promise实例,只要参数之中有一个实例率先改变状态,新的Promise的状态就跟着改变,那个率先改变的Promise实例的
+                  返回值就传递给新Promise的回调函数,若参数不是Promise实例,就会先调用Promise.resolve方法将参数转为Promise实例再进一步处理.
+   
