@@ -31,4 +31,10 @@ Promise对象
                  并不会触发Promise.all()的catch方法.
    Promise.race():将多个Promise实例包装成一个新的Promise实例,只要参数之中有一个实例率先改变状态,新的Promise的状态就跟着改变,那个率先改变的Promise实例的
                   返回值就传递给新Promise的回调函数,若参数不是Promise实例,就会先调用Promise.resolve方法将参数转为Promise实例再进一步处理.
+   Promise.resolve():将现有对象转为Promise对象,若参数是Promise实例,那么Promise.resolve将不做任何修改地返回这个实例,若参数是thenable对象,会将这个对象转
+                     为Promise对象,然后就立即执行thenable对象的then方法(thenable对象指的是具有then方法的对象),若参数不是具有then方法的对象或根本就不是
+                     对象,Promise.resolve返回一个新的 Promise 对象,状态为resolved,若调用时不带参数,直接返回一个resolved状态的Promise对象,而要注意的是
+                     立即resolve的Promise对象是在本轮"事件循环"的结束时,而不是在下一轮"事件循环"的开始时.
+   Promise.reject():返回一个新的Promise实例,该实例的状态为rejected,Promise.reject()方法的参数会原封不动地作为reject的理由,变成后续方法的参数.
+
    
