@@ -13,3 +13,9 @@ Iterator和for...of循环
                    Array Map Set String TypedArray 函数的arguments对象 NodeList对象,原生部署Iterator接口的数据结构不用自己写遍历器生成函数
                    for...of循环会自动遍历它们,而其他数据结构的Iterator接口都需要自己在Symbol.iterator属性上面部署才会被for...of循环遍历.
   字符串的Iterator接口:字符串是一个类似数组的对象,也原生具有Iterator接口.
+  遍历器对象的return(),throw():return方法和throw方法是否部署是可选的,return方法的使用场合是如果for...of循环提前退出(通常是因为出错或者有break语句或
+                              continue语句),就会调用return方法,如果一个对象在完成遍历前需要清理或释放资源,就可以部署return方法,throw方法主要是配合
+                              Generator函数使用.
+  for...of循环:为遍历所有数据结构的统一的方法,一个数据结构只要部署了Symbol.iterator属性,就被视为具有iterator接口,就可以用for...of循环遍历它的成员,也
+               就是说for...of循环内部调用的是数据结构的Symbol.iterator方法,for...of循环可以使用的范围包括数组、Set和Map结构、某些类似数组的对象(比如
+               arguments对象、DOM NodeList 对象)、后文的Generator对象以及字符串.
