@@ -12,3 +12,20 @@ Generator函数的语法
                       函数执行后返回一个遍历器对象,该对象本身也具有Symbol.iterator属性,执行后返回自身.
   next方法的参数:yield表达式本身没有返回值,或者说总是返回undefined,而next方法可以带一个参数,该参数就会被当作上一个yield表达式的返回值,即通过next方法的
                 参数在Generator 函数开始运行之后继续向函数体内部注入值,可以在Generator函数运行的不同阶段从外部向内部注入不同的值,从而调整函数行为.
+  for...of循环:可自动遍历Generator函数时生成的Iterator对象,且此时不再需要调用next方法,而扩展运算符(...)、解构赋值和Array.from方法内部调用的都是遍历
+               器接口,即它们都可以将Generator函数返回的Iterator对象作为参数.
+  Generator.prototype.throw():Generator函数返回的遍历器对象都有一个throw方法,可以在函数体外抛出错误,然后在Generator函数体内捕获,throw方法可以接受一个
+                              参数,该参数会被catch语句接收,建议抛出Error对象的实例,如果Generator函数内部没有部署try...catch代码块,那么throw方法抛出
+                              的错误将被外部try...catch代码块捕获,throw方法被捕获以后会附带执行下一条yield表达式,即会附带执行一次next方法,一旦
+                              Generator执行过程中抛出错误且没有被内部捕获,就不会再执行下去了,如果此后还调用next方法,将返回一个value属性等于undefined
+                              、done属性等于true的对象,即JaS引擎认为这个Generator已经运行结束了.
+  Generator.prototype.return():Generator函数返回的遍历器对象有一个return方法,可以返回给定的值并且终结遍历Generator函数,若return方法调用时不提供参数,
+                               则返回值的value属性为undefined,如果Generator函数内部有try...finally代码块,那么return方法会推迟到finally代码块执行完
+                               再执行.
+  next()、throw()、return()的共同点:作用都是让Generator函数恢复执行并且使用不同的语句替换yield表达式,next()是将yield表达式替换成一个值,throw()是将
+                                   yield表达式替换成一个throw语句,return()是将yield表达式替换成一个return语句.
+  yield*表达式:如果在Generator函数内部调用另一个Generator函数,默认情况下是没有效果的,而yield*表达式用来在一个Generator函数里面执行另一个Generator函数，
+              从语法角度看,如果yield表达式后面跟的是一个遍历器对象,就需要在yield表达式后面加上星号表明它返回的是一个遍历器对象,即yield*表达式,yield*后面
+              的Generator函数(没有return语句时),等同于在Generator函数内部部署一个for...of循环,若如果yield*后面跟着一个数组,由于数组原生支持遍历器,因此
+              就会遍历数组成员,而任何数据结构只要有Iterator接口就可以被yield*遍历,若被代理的 Generator 函数有return语句，那么就可以向代理它的Generator
+              函数返回数据.
