@@ -1,11 +1,22 @@
 数值的扩展
-  二进制和八进制表示法:前缀0b(0B)代表二进制,0o(0O)代表八进制.
-  Number.isFinite(),Number.isNaN():Number.isFinite()检查一个数值是否有限,对于非数值一律返回false,Number.isNaN()检查数值是否为NaN.
+
+  二进制和八进制表示法:1.前缀0b(0B)代表二进制,0o(0O)代表八进制.
+                      2.如果要将0b和0o前缀的字符串数值转为十进制,要使用Number().
+                      
+  Number.isFinite(),Number.isNaN():1.Number.isFinite()检查一个数值是否有限,对于非数值一律返回false.
+                                   2.Number.isNaN()检查数值是否为NaN,非NaN一律返回false.
+                                   
   Number.parseInt(),Number.parseFloat():对应原来的parseInt()和parseFloat().
+  
   Number.isInteger():用于判断一个数值是否为整数.
-  安全整数和Number.isSafeInteger():ES6引入Number.MAX_SAFE_INTEGER(2^53)和Number.MIN_SAFE_INTEGER(-2^53)两个常量,JS能够准确表示的整数范围,
-                                  Number.isSafeInteger()用来判断一个整数是否落在这个范围之内.
-  Math对象的扩展:新增17个方法,均为静态方法,只能在Math对象上使用,如Math.trunc()用于返回一个值的整数部分,会把目标先转化为数值,不能转化就返回NaN,
-                Math.sign()用于判断一个值为正负或零,Math.cort()返回一个值的立方根.
+  
+  安全整数和Number.isSafeInteger():1.ES6引入Number.MAX_SAFE_INTEGER(2^53)和Number.MIN_SAFE_INTEGER(-2^53)两个常量,为JS能够准确表示的整数范围.
+                                   2.Number.isSafeInteger()用来判断一个整数是否落在这个范围之内.
+  
+  Math对象的扩展:1.新增17个方法,均为静态方法,只能在Math对象上使用.
+                 2.Math.trunc()用于返回一个值的整数部分,会把目标先转化为数值,不能转化就返回NaN.
+                 3.Math.sign()用于判断一个值为正负或零.
+                 4.Math.cort()返回一个值的立方根.
+  
   指数运算符(**):例子:2**2能得到4,也可等号结合，形成新运算符(**=)(例子:a **= 2 等于 a = a * a).
   
