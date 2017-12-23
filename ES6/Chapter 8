@@ -1,21 +1,42 @@
 对象的扩展
-  属性的简洁表示法:ES6允许直接写入变量和函数,作为对象的属性和方法(const foo = 'bar';const baz = {foo}; 等于 const baz = {foo: foo};),属性名为变量
-                 名,属性值为变量的值.
-  属性名表达式:ES6允许字面量定义对象时用表达式作为对象的属性名,即把表达式放在方括号内(let obj = {[propKey]: true,['a' + 'bc']: 123};),表达式还可以
-              用于定义方法名,但属性名表达式与简洁表示法不能同时使用,属性名表达式如果是一个对象,默认情况下会自动将对象转为字符串[object Object].
+  属性的简洁表示法:1.ES6允许直接写入变量和函数,作为对象的属性和方法(const foo = 'bar';const baz = {foo}; 等于 const baz = {foo: foo};),属性名为变
+                    量名,属性值为变量的值.
+                  2.方法也可以简写(例:const o = {method() {return "Hello!";}}; 等于 const o = {method: function() {return "Hello!";}};).
+                 
+  属性名表达式:1.ES6允许字面量定义对象时用表达式作为对象的属性名,即把表达式放在方括号内(let obj = {[propKey]: true,['a' + 'bc']: 123};).
+              2.表达式还可以用于定义方法名(例:let obj = {['h' + 'ello']() {return 'hi';}};).
+              3.属性名表达式与简洁表示法不能同时使用,属性名表达式如果是一个对象,默认情况下会自动将对象转为字符串[object Object].
+  
   Object.is():用来比较两个值是否严格相等,与严格比较运算符(===)的行为基本一致,不会转换数据类型.
-  Object.assign():用于对象的合并,将源对象的所有可枚举属性,复制到目标对象,方法的第一个参数是目标对象,后面的参数都是源对象,若目标对象与源对象有同名属性,
-                  或多个源对象有同名属性,则后面的属性会覆盖前面的属性,若参数不是对象,则会先转成对象,然后返回(undefined和null是目标对象会报错),方法拷
-                  贝的属性是有限制的,只拷贝源对象的自身属性(不拷贝继承属性),也不拷贝不可枚举的属性.
-  属性的可枚举性和遍历:对象的每个属性都有一个描述对象(Descriptor),用来控制该属性的行为,Object.getOwnPropertyDescriptor方法可以获取该属性的描述对象,描
-                     述对象的enumerable属性,称为”可枚举性“,如果该属性为false，就表示某些操作会忽略当前属性(如for...in循环,Object.keys(),
-                     JSON.stringify(),Object.assign()).
-  __proto__属性:用来读取或设置当前对象的prototype对象,其本质上是一个内部属性,所以应尽量用而是使用下面的Object.setPrototypeOf()(写操作)、
-                Object.getPrototypeOf()(读操作)、Object.create()(生成操作)代替.
-  Object.setPrototypeOf(object, prototype):用来设置一个对象的prototype对象，返回参数对象本身,若第一个参数不是对象,会自动转为对象(undefined和null会
-                                           报错).
+  
+  Object.assign():1.用于对象的合并,将源对象的所有可枚举属性,复制到目标对象.
+                  2.方法的第一个参数是目标对象,后面的参数都是源对象,若目标对象与源对象有同名属性,或多个源对象有同名属性,则后面的属性会覆盖前面的属性,若
+                    参数不是对象,则会先转成对象,然后返回(undefined和null是目标对象会报错).
+                  3.方法拷贝的属性是有限制的,只拷贝源对象的自身属性(不拷贝继承属性),也不拷贝不可枚举的属性.
+                  4.属性名为Symbol值的属性也会被Object.assign拷贝.
+  
+  属性的可枚举性和遍历:1.对象的每个属性都有一个描述对象(Descriptor),用来控制该属性的行为.
+                     2.Object.getOwnPropertyDescriptor()可以获取该属性的描述对象,描述对象的enumerable属性,称为"可枚举性".
+                     3.如果该属性为false,就表示某些操作会忽略当前属性(如for...in循环,Object.keys(),JSON.stringify(),Object.assign()).
+  
+  __proto__属性:1.用来读取或设置当前对象的prototype对象.
+                2.本质上是一个内部属性,所以应尽量用而是使用下面的Object.setPrototypeOf()(写操作)、Object.getPrototypeOf()(读操作)、
+                  Object.create()(生成操作)代替.
+                3.如果一个对象本身部署了__proto__属性,该属性的值就是对象的原型.
+  
+  Object.setPrototypeOf(object, prototype):1.用来设置一个对象的prototype对象,返回参数对象本身.
+                                           2.若第一个参数不是对象,会自动转为对象(undefined和null会报错).
+  
   Object.getPrototypeOf(obj):用于读取一个对象的原型对象.
-  super关键字:指向当前对象的原型对象,类似this关键字,super关键字表示原型对象时,只能用在对象的方法之中,用在其他地方都会报错.
-  Object.keys(),Object.values(),Object.entries():Object.keys方法返回一个数组,成员是参数对象自身的(不含继承的)所有可遍历属性的键名,Object.values方
-                                                 法返回一个数组,成员是参数对象自身的(不含继承的)所有可遍历属性的键值,Object.entries方法返回一个数组,
-                                                 成员是参数对象自身的(不含继承的)所有可遍历属性的键值对数组.
+  
+  super关键字:1.指向当前对象的原型对象,类似this关键字.
+              2.super关键字表示原型对象时,只能用在对象的方法之中,用在其他地方都会报错.
+  
+  Object.keys(),Object.values(),Object.entries():1.Object.keys()返回一个数组,成员是参数对象自身的(不含继承的)所有可遍历属性的键名.
+                                                 2.Object.values()返回一个数组,成员是参数对象自身的(不含继承的)所有可遍历属性的键值.
+                                                 3.Object.values()只返回对象自身的可遍历属性,会过滤属性名为 Symbol 值的属性.
+                                                 4.如果Object.values()的参数是一个字符串会返回各个字符组成的一个数组.
+                                                 5.如果Object.values()参数不是对象,会先将其转为对象,由于数值和布尔值的包装对象都不会为实例添加非
+                                                   继承的属性,所以Object.values()会返回空数组.
+                                                 6.Object.entries()返回一个数组,成员是参数对象自身的(不含继承的)所有可遍历属性的键值对数组.
+                                                 7.Object.entries()的另一个用处是将对象转为真正的Map结构.
