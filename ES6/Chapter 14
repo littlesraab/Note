@@ -1,21 +1,29 @@
 Iterator和for...of循环
-  Iterator(遍历器)的概念:它是一种接口,为各种不同的数据结构提供统一的访问机制,任何数据结构只要部署Iterator接口,就可以完成遍历操作(即依次处理该数据结构的
-                        所有成员),Iterator的作用有三个,一是为各种数据结构提供一个统一简便的访问接口,二是使得数据结构的成员能够按某种次序排列,三是ES6
-                        创造了一种新的遍历命令for...of循环,Iterato 接口主要供for...of消费,Iterator的遍历先创建一个指针对象,指向当前数据结构的起始位
-                        置,即遍历器对象本质上就是一个指针对象,第一次调用指针对象的next方法可以将指针指向数据结构的第一个成员,第二次调用指针对象的next方
-                        法指针就指向数据结构的第二个成员,之后不断调用指针对象的next方法直到它指向数据结构的结束位置,每次调用next方法都会返回数据结构的
-                        当前成员的信息,即返回一个包含value和done两个属性的对象,其中value属性是当前成员的值,而done属性是一个布尔值,表示遍历是否结束,指
-                        针对象的next方法用来移动指针,开始时指针指向数组的开始位置,然后每次调用next方法指针就会指向数组的下一个成员.
-  默认Iterator接口:ES6规定默认的Iterator接口部署在数据结构的Symbol.iterator属性,即一个数据结构只要具有Symbol.iterator属性就可以认为是"可遍历的",
-                   而Symbol.iterator属性本身是一个函数,就是当前数据结构默认的遍历器生成函数,执行这个函数就会返回一个遍历器,至于属性名Symbol.iterator
-                   是一个表达式,返回Symbol对象的iterator属性,这是一个预定义好类型为Symbol的特殊值,ES6的有些数据结构原生具备Iterator接口(如数组),而凡
-                   是部署了Symbol.iterator属性的数据结构就称为部署了遍历器接口,调用这个接口就会返回一个遍历器对象,原生具备Iterator接口的数据结构有
-                   Array Map Set String TypedArray 函数的arguments对象 NodeList对象,原生部署Iterator接口的数据结构不用自己写遍历器生成函数
-                   for...of循环会自动遍历它们,而其他数据结构的Iterator接口都需要自己在Symbol.iterator属性上面部署才会被for...of循环遍历.
+  Iterator(遍历器)的概念:1.它是一种接口,为各种不同的数据结构提供统一的访问机制,任何数据结构只要部署Iterator接口,就可以完成遍历操作(即依次处理该数据结构
+                          的所有成员).
+                        2.Iterator的作用有三个,一是为各种数据结构提供一个统一简便的访问接口,二是使得数据结构的成员能够按某种次序排列,三是ES6创造了一种
+                          新的遍历命令for...of循环,Iterato 接口主要供for...of消费.
+                        3.Iterator的遍历先创建一个指针对象,指向当前数据结构的起始位置,即遍历器对象本质上就是一个指针对象,第一次调用指针对象的next方法可
+                          以将指针指向数据结构的第一个成员,第二次调用指针对象的next方法指针就指向数据结构的第二个成员,之后不断调用指针对象的next方法直到
+                          它指向数据结构的结束位置.
+                        4.每次调用next方法都会返回数据结构的当前成员的信息,即返回一个包含value和done两个属性的对象,其中value属性是当前成员的值,而done
+                          属性是一个布尔值,表示遍历是否结束,指针对象的next方法用来移动指针,开始时指针指向数组的开始位置,然后每次调用next方法指针就会指向
+                          数组的下一个成员.
+  
+  默认Iterator接口:1.ES6规定默认的Iterator接口部署在数据结构的Symbol.iterator属性,即一个数据结构只要具有Symbol.iterator属性就可以认为是"可遍历的".
+                   2.而Symbol.iterator属性本身是一个函数,就是当前数据结构默认的遍历器生成函数,执行这个函数就会返回一个遍历器,至于属性名Symbol.iterator
+                     是一个表达式,返回Symbol对象的iterator属性,这是一个预定义好类型为Symbol的特殊值.
+                   3.ES6的有些数据结构原生具备Iterator接口(如数组),而凡是部署了Symbol.iterator属性的数据结构就称为部署了遍历器接口,调用这个接口就会返
+                     回一个遍历器对象,原生具备Iterator接口的数据结构有Array Map Set String TypedArray 函数的arguments对象NodeList对象.
+                   4.原生部署Iterator接口的数据结构不用自己写遍历器生成函数for...of循环会自动遍历它们,而其他数据结构的Iterator接口都需要自己在
+                     Symbol.iterator属性上面部署才会被for...of循环遍历.
+  
   字符串的Iterator接口:字符串是一个类似数组的对象,也原生具有Iterator接口.
-  遍历器对象的return(),throw():return方法和throw方法是否部署是可选的,return方法的使用场合是如果for...of循环提前退出(通常是因为出错或者有break语句或
-                              continue语句),就会调用return方法,如果一个对象在完成遍历前需要清理或释放资源,就可以部署return方法,throw方法主要是配合
-                              Generator函数使用.
-  for...of循环:为遍历所有数据结构的统一的方法,一个数据结构只要部署了Symbol.iterator属性,就被视为具有iterator接口,就可以用for...of循环遍历它的成员,也
-               就是说for...of循环内部调用的是数据结构的Symbol.iterator方法,for...of循环可以使用的范围包括数组、Set和Map结构、某些类似数组的对象(如
-               arguments对象、DOM NodeList 对象)、后文的Generator对象以及字符串.
+  
+  遍历器对象的return(),throw():1.return方法和throw方法是否部署是可选的,return方法的使用场合是如果for...of循环提前退出(通常是因为出错或者有break语句或
+                                continue语句),就会调用return方法.
+                              2.如果一个对象在完成遍历前需要清理或释放资源,就可以部署return方法,throw方法主要是配合Generator函数使用.
+  
+  for...of循环:1.为遍历所有数据结构的统一的方法,一个数据结构只要部署了Symbol.iterator属性,就被视为具有iterator接口,就可以用for...of循环遍历它的成员,也
+                 就是说for...of循环内部调用的是数据结构的Symbol.iterator方法,for...of循环可以使用的范围包括数组、Set和Map结构、某些类似数组的对象(如
+                 arguments对象、DOM NodeList 对象)、后文的Generator对象以及字符串.
