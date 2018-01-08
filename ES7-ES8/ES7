@@ -1,4 +1,4 @@
-ES7
+ES7+ES8
   Array.prototype.includes():1.是一个替代indexOf()的方法,用来检查数组中是否存在值,返回一个布尔值.
                              2.还能在字符串中使用includes().
   
