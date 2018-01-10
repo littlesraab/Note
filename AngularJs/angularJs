@@ -1,0 +1,28 @@
+AngularJs
+  Data Binding:1.在angular中model(js)和view(html)组件之间的Data Binding是可以自动同步数据的.
+               2.view仅仅是model的投影,当model改变时view跟着改变,反之亦然,称为双向数据绑定(ng-model和输入类组件(如input)一般为双向数据绑定,即view和
+                 model可互相改变,而在controller中用{{}},一般为单向的绑定,即model改变view).
+  
+  controller:1.angular中controller由js的构造函数定义,主要用于增强angular的scope.
+             2.controller通过ng-controller指令与DOM关联,angular用controller构造函数实例化一个新的controller对象,同时一个新的child scope将被创建,然
+               后以参数$scope注入到controller中.
+               (var myApp = angular.module('myApp', []);)
+               (myApp.controller('myController', ['$scope', function ($scope) {$scope.me = 'hi';}]);创建controller并初始化$scope(child scope))
+               (html: <div ng-controller="myController"> {{me}} </div> 在controller相对应的DOM,me属性做了数据绑定并显示在controller控制的DOM)
+               (myApp.controller('myController', ['$scope', function($scope) {$scope.sayhi = function(value) { return 'hi ' + value; };}]);
+                为controller添加方法sayhi)
+               (html: <div ng-controller="DoubleController"><input ng-model="name"(双向数据绑定)> {{ sayhi(name) }}</div> 可在html的template
+                (一般指html代码)中调用添加到controller的方法,但要在对应的controller的控制范围中)
+             3.controller的方法可以通过直接赋值的方式创建而且controller的方法或者属性在template中是可用的.
+             4.若controller使用了controller as语法,会使controller更像一个类,其好处在嵌套块中更加明显.
+               (html: <div ng-controller="MyController as mc"> <span>{{mc.name}}</span></div>)
+               (js: app.controller('MyController', function() {this.name = 'Some title';});)
+             5.在scope中对象的初始化和给scope中对象增加一些行为时可用contrller.、
+             6.要操作dom时不要用controller,angular有很多数据绑定和封装了DOM操作的directives.
+             7.过滤输出时用angular filters代替.
+             8.在controller直接共享代码或状态时用angular services代替.
+             9.管理其他组件的生命周期(如创建一个service实例)时不使用controller.
+             10.controller在html中可以相互嵌套,而ng-controller指令会创建了一个子的scope,就可能会有一个相互继承的scope层次结构,每一个controller的
+                scope都可以访问比他更高层级controller定义的属性和方法. 
+
+
