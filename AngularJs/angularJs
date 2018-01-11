@@ -24,5 +24,69 @@ AngularJs
              9.管理其他组件的生命周期(如创建一个service实例)时不使用controller.
              10.controller在html中可以相互嵌套,而ng-controller指令会创建了一个子的scope,就可能会有一个相互继承的scope层次结构,每一个controller的
                 scope都可以访问比他更高层级controller定义的属性和方法. 
+   
+   Scopes:1.是一个指向app的对象,是表达式执行的上下文,scopes(作用域)模拟app的DOM结构构成自己的层次结构,可观察表达式和传播事件,为HTML(视图)和JS(控制器)
+            之间的纽带.
+          2.Scopes可$watch观察model的变化,可$apply通过系统把model的更改从controllers,services等外部传播到view之中.
+          3.Scopes可形成嵌套限制访问app组件的属性,同时也可以访问一些共享model的属性,嵌套scopes有两种,一种child scopes,另一种isolate scope(一般在指令
+            中,如自定义指令),child scope可以访问从父scope继承的属性(原型链),而isolate scope则不可以.
+            2.AngularJS存在四种作用域.
+            3.普通的带原型继承的作用域的,如ng-include,ng-switch,ng-controller,directive的scope属性为true时.
+            4.普通的带原型继承的并有赋值行为的作用域(ng-repeat),ng-repeat为每一个迭代项创建一个普通的有原型继承的子作用域,但同时在子作用域中创建新属
+              性存储迭代项.
+            5.Isolate作用域(isolate scope),当directive的scope属性为{...}时出现,该作用域没有原型继承,但可以通过'=','@'和'&'与父作用域通信.
+            6.transcluded作用域,当directive属性transclude为true时出现,它也是普通的带原型继承的作用域,但它与Isolate作用域是相邻关系,即他们的$parent
+              属性指向同一个父作用域,且Isolate作用域的$$nextSibling属性指向transcluded作用域.
+          4.每个app都有一个root scope,可有多个child scopes,一些指令(如ng-controller)可以创建新的child scopes,新scopes被创建就会被作为child scope增
+            加到它的parent scope中,构成一个树形结构,当Angular对一个属性求值时先在相关联的scope内寻找这个属性,若没找到它就会去parent scope中找一直搜到
+            root scope为止.
+          5.Scopes可以通过$broadcast()广播到children scopes,通过$emit()扩散到parent scope,通过$on()来监听事件和数据.
+          6.在编译时编译器将directives(指令)和DOM template进行匹配.
+            2.directives通常有观察directives(如{{ }}),用$watch()方法注册监听器,当表达式发生改变时directives被通知,后更新视图.
+            3.另一种是监听directives(如ng-click),注册一个监听器在DOM上,当监听器被激活,这个指令将执行相应的表达式并且用$apply()方法更新视图($apply()用
+              于传播模型的变化).          
+            4.一般directives不会创建一个新的scope实例,然而一些命令(如ng-repeat)会创建新的child scopes并且附加child scopes到相应的DOM元素中,可用
+              angular.element(aDomElement).scope()方法检索任意DOM元素对应的scope.
+            5.Angular脏检查即Angular在scope模型上设置了一个监听队列来监听数据变化并更新view,每绑定一个东西到view上时Angular就会往$watch队列里插入
+              一条$watch来检测它监视的model里是否有变化的东西,当浏览器接收到可以被angular context处理的事件时,$digest循环(脏检查)就会触发,遍历所有
+              的$watch,最后更新dom.
+              2.$watch()用于监听模型变化,当模型发生变化时会有提示($watch(watchExpression, listener, objectEquality),watchExpression为监听的对象,它可
+                以是一个angular表达式或函数,listener是watchExpression变化时会被调用的函数或者表达式,它接收3个参数newValue(新值),oldValue(旧值),scope
+                (作用域的引用),objectEquality为是否深度监听,如果设置为true,它告诉Angular检查所监控的对象中每一个属性的变化.
+              3.脏检查可以使用三种策略:通过引用,通过集合内容,通过值.
+              4.通过引用,检测到一个值完全变为一个新的值的变化,如果这个值是一个数组或者一个对象,它里面的值的改变是不会检测到的,这种策略是性能最高效的.
+                ($scope.name = "newName")
+              5.通过集合内容,可以检测数据(数组,JSON)和对象内部的变化,这种检测深度是比较浅,因为它不进入嵌套的集合,这种要比第一种更耗费性能,而这种策略
+                可以最小化必要的副本来减少耗费($scope.names.push(newName)).
+              6.通过值,这种可以检测到一个任意嵌套结构的所有变化,是最强力的但是也是最耗性能的,每一次digest它都需要完整的遍历整个数据结构.
+                ($scope.names[0].point = newPonit
+  
+  services:1.Angular中有几种不同类型的services,而service总是一个单体,无论是哪种类型的service,而service只有在应用生命周期结束的时候(关闭浏览器)才会
+             被清除,而AngularJS提供例如许多内在的服务,如:$http,$route,$window,$location等(单体是一种设计模式,它限制了每一个类仅能够实例化为一个对
+             象,无论我们在什么地方注入(inject)我们的service,将永远使用同一个实例).
+           2.service有三种方法,service(),factory()和provider().
+             2.Service一般直接用this来操作数据、定义函数,service()方法很适合使用在功能控制比较多的service里面,而需要使用.config()来配置service的时
+               候不能使用service()方法,且seivce定义的服务不能在.config中使用,只有provider定义的才可以.
+               (app.service('myService',function() {var value="private"; this.name="public"; this.getValue=function(){return value;};});)
+               (app.controller('myController', ['$scope', 'myService', function ($scope, myService) { }]);内联注解,推荐使用,自定义service在
+                注入时不用在前面$,数组中Service名称的个数必须与方法体中Service名称的个数一致且数组中Service的顺序必须与方法体中Serivce的顺序一致)
+               (var MyController=function($scope,myService){}; MyController.$inject=['$scope','myService']; 
+                sModule.controller('MyController', MyController)用$inject注解);
+             3.Factory一般就是创建一个对象,然后在对这个对象添加方法与数据,最后将些对象返回,然后注入到Controller中,只实例化一次,而factory一定要返回一个
+               Object,否则会报错.
+               (app.factory('myFactory',function() {var factory={},privateValue="private"; factory.variable="public";  
+                                                    factory.getPrivate=function() {return value;}; return factory;});)
+               (app.controller('myCtrl',function($scope,myFactory){$scope.getPrivate=function() {alert(myFactory.getPrivate());};  
+                                                                   $scope.getPublic=function() {alert(myFactory.variable);};});factory注入)
+             4.provider是通过$provide在Angular创造一个新的可注入的东西,即服务,服务会被供应商(provider)来定义,可用$provide来创建一个供应商,用$provide中
+               的provider()方法来定义一个供应商,也可用$provide注入到config函数中来获得$provide服务,使用方法是返回一个$get函数,在config(后面会讲)阶段
+               只有provider能被注入,其它用法和service一样,当在应用开始前对service进行配置的时候就需要使用到provider().
+               (app.provider('testProvider', function(){var f = function(name) {alert("Hello, " + name);};  
+                                                        this.$get(一定要有) = function(){return f;};});)
+               (app.controller('myCtrl1', function($scope, testProvider) {$scope.onclick1 = function() {testProvider("Evankaka");};});)
+             5.用Factory就是创建一个对象,为它添加属性,然后把这个对象返回出来,把service传进controller后在controller里这个对象里的属性就可以通过factory使y
+               使用,而Service是用new关键字实例化的,所以应该给"this"添加属性,然后service返回"this",把service传进controller后,controller里"this"
+               ($scope)的属性就用service定义的属性或方法,Providers是唯一一种可以传进.config()函数的service,当要在service对象启用之前先进行模块范围的配置,
+               就应该用provider,Factory/service是第一个注入时才实例化,provider不是,它是在config之前就已实例化好.
 
 
