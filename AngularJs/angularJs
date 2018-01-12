@@ -88,5 +88,28 @@ AngularJs
                使用,而Service是用new关键字实例化的,所以应该给"this"添加属性,然后service返回"this",把service传进controller后,controller里"this"
                ($scope)的属性就用service定义的属性或方法,Providers是唯一一种可以传进.config()函数的service,当要在service对象启用之前先进行模块范围的配置,
                就应该用provider,Factory/service是第一个注入时才实例化,provider不是,它是在config之前就已实例化好.
-
+               
+  依赖注入:1.Angular创建一个对象时需要依赖另一个对象,这是代码层的一种依赖关系,当这种依赖被声明后,Angular通过injector(注入器)将所依赖的对象进行注入操作.
+           2.一个组件(对象或者函数)获得它需要的依赖的方法有三种,一是组件去创建这个依赖,通常使用new操作符,二是组件去查找一个依赖,引用一个全局变量,三是
+             组件可以得到一个依赖传递在它需要使用的地方,第三种方法为最佳.
+           3.为了管理依赖创建的责任,每个angular应用都有一个injector,injector是一个负责创建和查找依赖的服务定位器.
+             (myModule.factory('myFactory', function($window) {return { }};});创建了一个factory并注入了$window服务)
+           4.services,directives,filters和animations都由一个工厂方法或者构造函数定义,service和value组件可以作为依赖注入到这些组件当中.
+             (.directive('directiveName', ['mySerivce', function(myService) {  }]))
+           5.可以指定module在配置和运行时需要调用的config方法和run方法(这两个方法会在app运行前先运行),这些函数就像上面的工厂方法一样可以注入依赖.
+             (angular.module('myModule', []).config(['myProvider', function(myProvider) {  }]) .config只能注入provider,而run可以注入服务)
+           6.controller可提供让app可以在模板定义声明性标记的行为(方法),定义controller中使用依赖注入的推荐方法是用一个数组.
+             (someModule.controller('MyController', ['$scope', function($scope) {$scope.aMethod = function() { }}]); $scope就是注入的服务)
+             2.$scope特点:controller与DOM中的一个元素相关联,因此提供了以元素相对应的访问范围,其他组件(如service)只能访问$rootScope服务.
+             3.$resolves特点:如果controller被实例化为route的一部分,作为route的一部分解析的任何值都可用于注入控制器.
+           7.angualr有三种注解方式.
+             2.内联数组注解,内联函数由所需依赖名字构成的字符串列表和函数本身构成,而内联数组中所需依赖名字字符串顺序和函数中的参数顺序要一致.
+               (myModule.controller('myController', ['$scope', 'myService', function($scope, myService) { }]);)
+             3.使用$inject也可进行依赖注入，$inject依赖注入是一个由所需依赖名字构成字符串数组,和内联数组注解一样函数中的依赖参数顺序要和$inject数组里
+               的顺序一致.
+               (var MyController = function($scope, myService) { }; MyController.$inject = ['$scope', 'myService']; 
+                someModule.controller('MyController', MyController);)
+             4.获得依赖最简单的方法就是假定函数参数的名字就是所需依赖的名字,即给出一个函数，injector可以通过检查函数声明和提取参数名称来确定需要注入的
+               service的名字(不推荐).
+               (someModule.controller('MyController', function($scope, myService) { });)
 
