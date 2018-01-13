@@ -112,4 +112,27 @@ AngularJs
              4.获得依赖最简单的方法就是假定函数参数的名字就是所需依赖的名字,即给出一个函数，injector可以通过检查函数声明和提取参数名称来确定需要注入的
                service的名字(不推荐).
                (someModule.controller('MyController', function($scope, myService) { });)
+               
+  angular表达式:1.angular不能用JS的eval()方法对表达式进行求值,而用angular的$parse来处理这些表达式,angular表达式不能直接访问全局变量window,document,
+                  location,可在controller的函数中去使用$window和$location,然后从表达式中调用,这些服务也可以访问全局变量.
+                2.angular可以用this标识符访问上下文对象,也可以用$locals标识符访问locals的对象.
+                3.除了三元运算符外不能在angular表达式写一个控制流语句,应用的逻辑应该在控制器中,而不是视图,如果需要在angular表达式写一个条件,循环,或者异
+                  常,委托给JS方法.
+                4.不能在angular表达式定义函数或者创建正则表达式,这些逻辑可以放在controller中或者一个专门的filtter中.
+  
+  插补和数据绑定:1.在编译的过程中编译器会使用$interpolate去查看文本节点和元素属性是否包含嵌入式表达式插补标记,如果有就会增加一个interpolateDirective在这
+                  个节点上并且在插补的计算函数上注册watches,作为常规digest循环的一部分会更新对应的文本节点和属性值(常用于数据绑定文本节点和属性值).
+                  (<a ng-href="img/{{username}}.jpg">Hello {{username}}!</a>)
+                2.如果插补值不是string.
+                  2.undefined和null被转换成''.
+                  3.如果值是一个对象,但不是Number,Date,Array,$interpolate将查找对象自定义的toString()函数,自定义意味着
+                    myObject.toString !== Object.prototype.toString.
+                  4.如果以上都不是,将会采用JSON.stringify.
+                3.在boolean属性上放一个angularjs插补表达式,这个绑定信息会丢失,因为浏览器会忽略这个属性值,而AngularJS为这些boolean属性提供了一个特殊的ng
+                  为前缀的指令,包括disabled, required, selected, checked, readOnly 和 open.
+                  (<button ng-disabled="isDisabled">Disabled</button>)
+                4.如果带有绑定的属性以ngAttr为前缀,绑定的时候就会应用为无前缀的属性,这将允许你绑定那些会被浏览器处理的属性,使用ngAttr时,$interpolate的
+                  allOrNothing将会启用,如果插补表达式的运算结果为undefined,属性就会被移除不会增加到元素中.
+                  (<svg ng-attr-view_box="{{viewBox}}"><svg>用于绑定自定义属性)
+                5.不建议在表达式中内嵌插补,可以将复制表达式的计算委托给scope.
 
