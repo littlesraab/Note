@@ -196,4 +196,35 @@ AngularJs
             3.运行块(run)在injector创建之后执行,被用于启动app,只有实例和常量可以注入到运行块,这可以放置在app运行阶段进行系统配置.
           2.angular.module('myModule', [])将会创建一个名为myModule的模块,如果myModule已存在那么将会重写,就是说重新创建了个新的.
           3.angular.module('myModule')只会检索已存在的模块.
+
+  constant和value:1.angularJS可以通过constant(name,value)和value(name,value)创建服务.
+                  2.相同点是都可以接受两个参数,name和value.
+                  3.区别是constant(name,value)可以将一个已经存在的变量值注册为服务,并将其注入到应用的其他部分中,name为注册的常量的名字,value为注册
+                    的常量的值或对象,而value(name,value)的name同样是需要注册的服务名,value将这个值将作为可以注入的实例返回.
+                    (angular.module('myApp') .constant('apiKey','123123123') .controller('MyController', function($scope, apiKey) { })
+                    (angular.module('myApp') .constant('apiKey',{name:[],age:[],date:[]}) .factory('myFactory',function(apiKey,$scope){ })
+                  4.最大的区别是constant可以注入到配置函数中而value不行,可以通过value()来注册服务对象或函数,用constant()来配置数据,value不可以在
+                    config里注入,但是constant可以,而value可以修改,但是constant不可以修改,一般直接用constant配置一些需要经常使用的数据.
+  
+  ngRoute:1.ngRoute包含
+           2.ngView:路由的不同模板其实都是插入这个元素里.
+           3.$routeProvider:路由配置.
+           4.$route:各个路由的url,view,controller.
+           5.$routeParams:路由参数,一般用在controller内.
+          2.ngRoute的基本流程
+           2.在需要路由的地方使用ngView来定义视图模板.
+           3.在module中注入ngRoute模块.
+           4.在config中用$routeProvider来对路由进行配置templateUrl,controller,resolve.
+           5.在每个controller中写业务逻辑.
+           6.在controller中可以通过注入$routeParams来获得url上的参数.
+          3.使用$routeProvider.when来配置路由的关系,方法接受两个参数,第一个参数是url的路径,第二个参数是配置url对应的templateUrl和controller.
+            $routeProvider.otherwise方法相当于default.
+           (app.config(function ($routeProvider) {$routeProvider .when("/", {templateUrl: "main.html",controller: 'mainController'})
+            .otherwise('/');});)
+          4.resolve是一个map对象.
+            2.map的key是可以注入到controller的可选的依赖项,如果resolve其中依赖项的返回值是promise,在controller初始化之前路由会一直等待直到所有的
+              promise都已经resolved或者其中的一个被rejected,如果所有的promise都成功resolved,这些依赖项将可以注入到controller中并同时触发
+              $routeChangeSuccess事件,如果其中的一个promise是rejected那么将会触发$routeChangeError事件并中止路由切换.
+            2.map的value如果是个字符串,那么它会是一个service的别名,如果是一个函数,他的返回值可以被当做依赖注入到controller中,如果返回值是一个
+              promise,在注入之前必须是resolved的,注意这时候ngRoute.$routeParams还不可用,如果需要使用参数则需要使用$route.current.params.
         
