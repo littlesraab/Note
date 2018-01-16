@@ -227,4 +227,16 @@ AngularJs
               $routeChangeSuccess事件,如果其中的一个promise是rejected那么将会触发$routeChangeError事件并中止路由切换.
             2.map的value如果是个字符串,那么它会是一个service的别名,如果是一个函数,他的返回值可以被当做依赖注入到controller中,如果返回值是一个
               promise,在注入之前必须是resolved的,注意这时候ngRoute.$routeParams还不可用,如果需要使用参数则需要使用$route.current.params.
-        
+
+  Components:1.在angularjs中Component是一种特殊的directive,它的配置更简单一些.
+             2.Component比普通directive要简单很多,更加严谨更加规范化,更加适合组件化架构,更容易升级到angular2.
+             3.在需要在编译阶段和预链接阶段执行的directive,或需要directive才有定义的选项时,或是需要directive由属性,css的class而不是元素触发时不应
+               使用component.
+             4.Components由angularjs的module使用.component()方法注册,接受2个参数,即Component的名称(字符串类型),Component的配置对象(仅仅是个配置
+               对象).
+             5.Component只能控制它自己的视图和数据,Component不会修改它自身scope之外的任何数据或DOM.
+             6.components不包含compile和pre-link这两个钩子,所以component无法用于操作DOM.
+             7.Component有明确定义的生命周期,每个组件都可以实现lifecycle hooks,这些方法会在component生命周期的相应的点被调用.
+             8.directive默认作用域不隔离(scope默认为false),Components默认父子作用域隔离.
+             9.directive当设置scope为对象时属性有三种前缀标示符可以设置,Components的bindings(相当于directive的scope)多了一种"<"(单向数据传输,即父组件改变
+               状态会影响子组件的状态,子组件改变状态不会影响父组件的状态).
