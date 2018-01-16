@@ -237,6 +237,25 @@ AngularJs
              5.Component只能控制它自己的视图和数据,Component不会修改它自身scope之外的任何数据或DOM.
              6.components不包含compile和pre-link这两个钩子,所以component无法用于操作DOM.
              7.Component有明确定义的生命周期,每个组件都可以实现lifecycle hooks,这些方法会在component生命周期的相应的点被调用.
+               2.$onInit():在element上的所有controller构造和所有的绑定初始化之后,在element之上前缀&的函数链接之前,每个controller调用这个钩子方法这
+                 是个给controller写一些初始化方法的地方,可以把一个函数赋值给该属性,通常是通过bindings: {} 对象来把需要的数据传递到组件中,使用$onInit
+                 来进行一些初始化工作.
+                 (var myComponent = {bindings: {}, controller: function () {this.$onInit = function() { };}}; angular.module('app')
+                  .component('myComponent', myComponent);)
+               3.因为不同的生命周期钩子都在组件的不同生命周期被调用,一个组件也可以从另外的组件中继承方法,甚至继承的方法在$onInit钩子中就可以直接使用,
+                 .component()方法中require字段后面接对象(只在component中),require可被设置为^^anotherComponent,require值前面^^表示自会在当前组件的
+                 父组件中搜寻anotherComponent控制器,(如果require值前面是^那么首先会在当前组件搜寻是否有该控制器,如果没有再在其父组件中搜寻)
+                 (var myComponent = {... require: {parent: '^^anotherComponent'},....(如果require对象中属性名和require的控制器同名,那么就可以省
+                 略控制器名))
+               4.$postLink()当组件及其子组件的元素已经被编译和链接触发的钩子,和post-link函数类似,可以设置DOM事件的处理程序或者直接进行DOM操作,包含
+                 templateUrl指令的element不会被编译和链接,因为它们要等template异步加载,它们的编译和链接要等template完成之后才会执行.
+                 2.在$postLink函数中并不是一个好的地方用以处理DOM操作,在Angular生态圈外通过原生的事件绑定来为HTML/template扩展行为,Directive依然是最
+                   佳选择.
+               5.$onChanges会在组件初始化的时候被调用,组件初始化时会传递最初的changes对象,就可以直接获取到我们所需的数据了,第二种会被调用的场景就是只
+                 当单向数据绑定 < 和 @(用于获取DOM特性值,这些值是通过父组件传递的)改变时会被调用(即值在父组件发生变化,触发子组件onChanges).
+                 (var childComponent={...controller: function(){this.$onChanges=function(changes) {this.user=changes.user.currentValue};}};
+                  可通过curentValue来引用到该数据，也就是change对象上面的curentChange属性,也可改为this.user = angular.copy(this.user)(更好))
+               6.若使用了$postLink来设置了DOM事件监听函数或者其他非Angular原生的逻辑,在$onDestroy中你可以把这些事件监听或者非原生逻辑清理干净。   
              8.directive默认作用域不隔离(scope默认为false),Components默认父子作用域隔离.
-             9.directive当设置scope为对象时属性有三种前缀标示符可以设置,Components的bindings(相当于directive的scope)多了一种"<"(单向数据传输,即父组件改变
-               状态会影响子组件的状态,子组件改变状态不会影响父组件的状态).
+             9.directive当设置scope为对象时属性有三种前缀标示符可以设置,Components的bindings(相当于directive的scope)多了一种"<"(单向数据传输,即父组
+               件改变状态会影响子组件的状态,子组件改变状态不会影响父组件的状态).
