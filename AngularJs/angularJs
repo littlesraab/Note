@@ -259,3 +259,33 @@ AngularJs
              8.directive默认作用域不隔离(scope默认为false),Components默认父子作用域隔离.
              9.directive当设置scope为对象时属性有三种前缀标示符可以设置,Components的bindings(相当于directive的scope)多了一种"<"(单向数据传输,即父组
                件改变状态会影响子组件的状态,子组件改变状态不会影响父组件的状态).
+
+  directive:1.directive是DOM元素上的标记,告诉angularjs的HTML编译器($complile)给DOM元素附加上一些特殊的行为或者是改变DOM元素和它的子元素,angularjs内
+              置了一套directive,像ngBind,ngModel和ngClass.
+            2.angular规范了元素的标签名和属性名以此来决定元素和指令的匹配,一般提到指令时都是用他们区分大小写的骆驼命名法(如ngModel),但是HTML不区分大小
+              写,因此在DOM中要把他们写成全部小写的作为元素的属性并且中间用破折号分割(如my-dir).
+            3.directive是由module注册,可以使用module.directive注册directive,module.directive接受一个规范的directive名字,后面紧跟一个工厂函数,工厂
+              函数返回的是一个带有不同选项的object,这个object告诉$compile当元素匹配到这个指令时该如何做(template为directive的模板).
+              (angular.directive('myDirective',function (){return {template:'Name: {{directive.name}} Address: {{directive.address}}'};});)
+              2.除非template非常小,否则需要把内容放置在一个html文件中然后用templateUrl选项加载它,templateUrl也可以是个函数,返回一个可以被directive加
+                载的template的url,AngularJS会传入两个参数,directive所添加在的元素本身elem还有这个元素的属性attr.
+                (angular.directive('myDirective', function () {return {templateUrl: 'my-directive.html'};});)
+                (angular.directive('myDir', function() {return {templateUrl: function(elem,attr) {return 'dir-' + attr.type + '.html';}};});)
+            4.创建指令时它仅仅默认的限定了元素名称和属性名称,如果想要class名称也触发,就要使用restrict选项.
+              (restrict选项列表 :A - 仅仅匹配属性名称 E - 仅仅匹配元素名称 C - 仅仅匹配class名称 M - 仅仅匹配注释,这些限定也可以组合)
+            5.可把directive的范围内部和外部的scope区分开,然后把外部scope映射到内部范围,通过创建隔离范围(isolate scope)来做到这一点,这需要使用directive
+              的scope选项,scope会继承自父scope,而隔离scope则不会.
+              (angular..directive('myDir', function() {return {scope: {dirInfo: '=info'};});涉及到绑定策略,后面会讲)
+              (scope选项是一个对象,该对象包含了每一个隔离范围绑定的属性,名字对应directive隔离范围的属性(dirInfo),值告诉$compile绑定到info属性)
+            7.操作DOM的指令通常使用link选项来注册DOM监听器和修改DOM,link会在template被克隆后在directive逻辑放置的地方执行.
+              2.link对应的是一个函数function link(scope, element, attrs, controller, transcludeFn) { ... }
+                (scope:AngularJS的scope对象,element:directive相匹配的element，由jqLite封装,attrs:element的属性构成的键值对对象,controller:directive
+                 需要的controller实例,或者directive自身的controller,具体要看directive的require选项如何指定,transcludeFn:预绑定到相应的transclude范围
+                 的transclude函数)
+            8.transclude选项使得directive的上下文可以访问指令外部的范围而不是访问指令内部的范围,有false,true,element,transclude选项改变了scope嵌套的方
+              式,它使得指令访问指令外部的scope而不是指令内部的scope,它给出了访问外部scope的上下文.
+            9.可在模版中将directives组合着用,有时候需要把几个directives组合成一个组件(require选项表示directive依赖的directive的controller的名单).
+              (angular.directive('myDir', function () {return {require: '^^myTabs',....};});)
+              (当directive指令使用require选项,如果找不到对应的controller,$compile就会报错,^^前缀的意思是该directive需要在父element搜索指定到controller
+              (^前缀表示在父element或者directive自己所在的element进行搜索controller,如果没有前缀那么就仅仅在自己所在的element进行搜索))
+              (如果需要多个controller,directive的require选项也可以接收数组参数,而link函数的第四个参数也会是一个数组(require: ['^^myTabs', 'ngModel']))
