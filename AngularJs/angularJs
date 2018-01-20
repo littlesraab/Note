@@ -283,8 +283,12 @@ AngularJs
                  需要的controller实例,或者directive自身的controller,具体要看directive的require选项如何指定,transcludeFn:预绑定到相应的transclude范围
                  的transclude函数)
             8.transclude选项使得directive的上下文可以访问指令外部的范围而不是访问指令内部的范围,有false,true,element,transclude选项改变了scope嵌套的方
-              式,它使得指令访问指令外部的scope而不是指令内部的scope,它给出了访问外部scope的上下文.
-            9.可在模版中将directives组合着用,有时候需要把几个directives组合成一个组件(require选项表示directive依赖的directive的controller的名单).
+              式,它使得指令访问指令外部的scope而不是指令内部的scope,它给出了访问外部scope的上下文,transclude是保留自定义指令子元素中的内容,如果想要保留子
+              元素,那么就要transclude:true,并且在templace中相应的地方使用ng-transclude说明嵌入在哪.
+              2.当transclude为true时,原有的html会被包裹在ng-transclude所在节点内,自动将其包裹在span中,若本来就有了span,angular是不会再加span的.
+              3.当transclude为element时,可把子元素和本身都保留下来,并被包裹在ng-transclude所在节点内.
+            9.replace选项是是否替换掉自定义的指令,默认是false.
+            10.可在模版中将directives组合着用,有时候需要把几个directives组合成一个组件(require选项表示directive依赖的directive的controller的名单).
               (angular.directive('myDir', function () {return {require: '^^myTabs',....};});)
               (当directive指令使用require选项,如果找不到对应的controller,$compile就会报错,^^前缀的意思是该directive需要在父element搜索指定到controller
               (^前缀表示在父element或者directive自己所在的element进行搜索controller,如果没有前缀那么就仅仅在自己所在的element进行搜索))
