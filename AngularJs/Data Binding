@@ -1,0 +1,6 @@
+Data Binding
+  1.在angular中model(js)和view(html)组件之间的Data Binding是可以自动同步数据的.
+  2.view(html)仅仅是model(js)的投影,当model改变时view跟着改变,反之亦然,这称为双向数据绑定.
+  3.ng-model和输入类组件(如input)一般为双向数据绑定,即view和model可互相改变.
+  4.而像在controller中使用{{}}(html),一般为单向的绑定,即model改变后view改变,而view的改变没使model改变.
+  
