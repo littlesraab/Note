@@ -1,0 +1,67 @@
+  services 
+    1.Angular中有几种不同类型的services,而service总是一个单体,无论是哪种类型的service,而service只有在应用生命周期结束的时候(关闭浏览器)才会被清除,而
+      AngularJS提供例如许多内在的服务,如:$http,$route,$window,$location等(单体是一种设计模式,它限制了每一个类仅能够实例化为一个对象,无论我们在什么地
+      方注入(inject)我们的service,将永远使用同一个实例).
+    2.service有三种方法,service(),factory()和provider().
+      1.Service一般直接用this来操作数据、定义函数,service()方法很适合使用在功能控制比较多的service里面,而需要使用.config()来配置service的时候不能使用
+        service()方法,且seivce定义的服务不能在.config中使用,只有provider定义的才可以.
+        JS
+         app.service('myService',function() {
+           var value="private"; 
+           this.name="public"; 
+           this.getValue=function(){
+              return value;
+           };
+         });)
+         
+      2.app.controller('myController', ['$scope', 'myService', function ($scope, myService) { }]);内联注解,推荐使用,自定义service在注入时不用在
+        前面$,数组中Service名称的个数必须与方法体中Service名称的个数一致且数组中Service的顺序必须与方法体中Serivce的顺序一致)
+        JS
+         var MyController=function($scope,myService){}; 
+         MyController.$inject=['$scope','myService']; 
+         sModule.controller('MyController', MyController)用$inject注解);
+      3.Factory一般就是创建一个对象,然后在对这个对象添加方法与数据,最后将些对象返回,然后注入到Controller中,只实例化一次,而factory一定要返回一个Object,
+        否则会报错.
+        JS
+         app.factory('myFactory',function() {
+           var factory={},
+               privateValue="private"; 
+               
+           factory.variable="public";  
+           factory.getPrivate=function() {
+              return value;
+           }; 
+           return factory;
+         });)
+         
+         app.controller('myCtrl',function($scope,myFactory){
+           $scope.getPrivate=function() {
+              alert(myFactory.getPrivate());
+           };  
+           
+           $scope.getPublic=function() {
+              alert(myFactory.variable);
+           };
+         });factory注入)
+      4.provider是通过$provide在Angular创造一个新的可注入的东西,即服务,服务会被供应商(provider)来定义,可用$provide来创建一个供应商,用$provide中的
+        provider()方法来定义一个供应商,也可用$provide注入到config函数中来获得$provide服务,使用方法是返回一个$get函数,在config(后面会讲)阶段只有
+        provider能被注入,其它用法和service一样,当在应用开始前对service进行配置的时候就需要使用到provider().
+        JS
+         app.provider('testProvider', function(){
+           var f = function(name) {
+              alert("Hello, " + name);
+           };  
+           this.$get(一定要有) = function(){
+             return f;
+           };
+         });)
+         
+         app.controller('myCtrl1', function($scope, testProvider) {
+           $scope.onclick1 = function() {
+              testProvider("Evankaka");
+           };
+         });)
+      5.用Factory就是创建一个对象,为它添加属性,然后把这个对象返回出来,把service传进controller后在controller里这个对象里的属性就可以通过factory使y使
+        用,而Service是用new关键字实例化的,所以应该给"this"添加属性,然后service返回"this",把service传进controller后,controller里"this"($scope)的
+        属性就用service定义的属性或方法,Providers是唯一一种可以传进.config()函数的service,当要在service对象启用之前先进行模块范围的配置,就应该用
+        provider,Factory/service是第一个注入时才实例化,provider不是,它是在config之前就已实例化好.
