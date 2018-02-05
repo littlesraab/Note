@@ -1,0 +1,7 @@
+angular表达式
+  1.angular不能用JS的eval()方法对表达式进行求值,而用angular的$parse来处理这些表达式,angular表达式不能直接访问全局变量window,document,location,可在
+    controller的函数中去使用$window和$location,然后从表达式中调用,这些服务也可以访问全局变量.
+  2.angular可以用this标识符访问上下文对象,也可以用$locals标识符访问locals的对象.
+  3.除了三元运算符外不能在angular表达式写一个控制流语句,应用的逻辑应该在控制器中,而不是视图,如果需要在angular表达式写一个条件,循环,或者异常,委托给JS方
+    法.
+  4.不能在angular表达式定义函数或者创建正则表达式,这些逻辑可以放在controller中或者一个专门的filtter中.
