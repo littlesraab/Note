@@ -1,0 +1,15 @@
+插补和数据绑定
+  1.在编译的过程中编译器会使用$interpolate去查看文本节点和元素属性是否包含嵌入式表达式插补标记,如果有就会增加一个interpolateDirective在这个节点上并且
+    在插补的计算函数上注册watches,作为常规digest循环的一部分会更新对应的文本节点和属性值(常用于数据绑定文本节点和属性值).
+    (<a ng-href="img/{{username}}.jpg">Hello {{username}}!</a>)
+  2.如果插补值不是string.
+    1.undefined和null被转换成''.
+    2.若值是个对象,但不是Number,Date,Array,$interpolate将查找对象自定义toString()函数,自定义即着myObject.toString !== Object.prototype.toString.
+    3.如果以上都不是,将会采用JSON.stringify.
+  3.在boolean属性上放一个angularjs插补表达式,这个绑定信息会丢失,因为浏览器会忽略这个属性值,而AngularJS为这些boolean属性提供了一个特殊的ng为前缀的指令,
+    包括disabled, required, selected, checked, readOnly 和 open.
+    (<button ng-disabled="isDisabled">Disabled</button>)
+  4.如果带有绑定的属性以ngAttr为前缀,绑定的时候就会应用为无前缀的属性,这将允许你绑定那些会被浏览器处理的属性,使用ngAttr时,$interpolate的allOrNothing
+    将会启用,如果插补表达式的运算结果为undefined,属性就会被移除不会增加到元素中.
+    (<svg ng-attr-view_box="{{viewBox}}"><svg>用于绑定自定义属性)
+  5.不建议在表达式中内嵌插补,可以将复制表达式的计算委托给scope.
