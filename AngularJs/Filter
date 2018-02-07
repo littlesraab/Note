@@ -1,0 +1,18 @@
+filter
+  1.过滤器将表达式的运算结果格式化后呈现给用户,可以用于视图模版,控制器或者服务,angularjs有一些内置的过滤器,用户也可自定义.
+  2.过滤器可以用于视图模版中的表达式({{ expression | filter }}).
+  3.angularjs的过滤器也支持过滤链({{ expression | filter1 | filter2 | ... }}).
+  4.过滤器还能支持参数输入({{ expression | filter:argument1:argument2:... }}).
+  5.视图模版中的过滤器仅仅在输入改变时才会执行,但如果过滤器对输入是object,每次$digest过滤器都会执行,因为要监测object是否改变会更耗性能,如果过滤器标记为
+    $stateful,那么也会在每次$digest都执行.
+  6.可以在控制器,服务和指令中使用过滤器,将过滤器以<filterName>Filter的语法注入到相应的controller/service/directive中.
+    JS
+      controller('FilterController', ['filterFilter', function(filterFilter) {
+         this.filteredArray = filterFilter(this.array, 'a');
+      })).
+  7.自定义filter要在module中注册一个新的filter工厂函数,工厂函数会返回一个新的filter函数,filter的输入作为过滤器函数的第一个参数,其他filter的参数作为过
+    滤器函数的附加参数传入,过滤器的名字必须是有效的angularjs表达式标识符,一般用驼峰发命名.
+    JS
+      angular.module('myReverseFilterApp', []).filter('reverse', function() {
+         return function(){filter的内容}
+      };))
