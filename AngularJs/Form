@@ -1,0 +1,79 @@
+form
+  1.controller主要用于接收用户输入(如input, select, textarea),而form是一组相关控件的集合,form和controller提供验证服务,可在用户提交表单到后端前得到
+    无效输入的通知.(novalidate可以禁用浏览器对表单进行原生性的校验,除非输入通过校验,否则ngModel对应的值不会被设置)
+    HTML
+      <form novalidate class="simple-form"> 
+        <label>Name: 
+          <input type="text" ng-model="user.name" />
+        </label><br/> 
+      </form> (ngModel提供了视图到模型,模型到视图的双向绑定,它还提供了一些api给其他指令用于增强它的作用)
+  2.表单和控件一样都有样式,ngModel增加了一些css class.
+    1.ng-valid:model有效.
+      ng-invalid:model无效.
+      ng-valid-[key]:通过$setValidity添加的每一个有效的key.
+      ng-invalid-[key]:通过$setValidity添加的每一个无效的key.
+      ng-pristine:控件值为初始状态.
+      ng-dirty:控件的值已经做过了修改.
+      ng-touched:控件已经被点击过并失去焦点.
+      ng-untouched:控件还未被点击过.
+      ng-pending:还有$asyncValidators未完成.
+      HTML
+        <form novalidate class="css-form"> 
+          <label>Name: 
+            <input type="text" ng-model="user.name" required />
+          </label><br/>
+        </form>
+        
+      CSS
+        .css-form input.ng-invalid.ng-touched { 
+           background-color: #FA787E;
+         }
+  3.在angualr中form是FormController的实例,form实例可以通过name属性发布到scope中,同样带有ngModel指令的输入控件一样也是NgModelController实例,一样可
+    以通过控件的name属性发布,作为form实例的一个属性,即form和控件的内部状态一样可以通过标准的绑定方式在视图中绑定.
+    HTML
+      <form  novalidate class="css-form" name="form">
+        <label>Name: 
+          <input type="text" ng-model="user.name" name="uName" required=""/>
+        </label><br/>
+        <div ng-show="form.$submitted || form.uName.$touched">
+          <input type="checkbox" ng-model="user.agree" name="userAgree"required=""/></div>
+        <div ng-show="form.$submitted || form.userAgree.$touched"></div>
+      </form>(即form范围内可以使用form这个实例的属性,ng-model也一样)
+  4.可以通过ngModelOptions指令绑定到特殊的事件列表中以重写这种行为(ng-model-options="{updateOn: 'blur'}"表示仅仅在用户输入并且失去焦点时才会更新
+    model并且进行表单验证,如果是多个事件,可以使用空格分开,如果这些属性添加到某个元素中,那么这个元素的所有子元素和控件都会继承他的设定,除非子元素和控
+    件重写这些属性)
+  5.AngularJS为html5最常用的输入类型(text,number,url,email,date,radio,checkbox)提供了基本的实现,以及一些用于验证的指令(required,pattern,minlength,
+    maxlength,min,max),在ngModelController实例的$validators对象中增加你自定义的验证函数.
+    1.$validators对象的每一个验证函数都有两个参数modelValue和viewValue,angularjs会在内部调用$setValidity函数,参数就是这个验证函数的返回值,每次输入
+      发生变化($setViewValue被调用)或约束模型发生变化时)验证函数都会执行,parsers和formatters成功运行之后验证会分别进行,如果验证失败错误的key会保存在
+      ngModelController.$error中.
+      JS
+        app.directive('integer', function() {
+          return {
+            require: 'ngModel',
+            link: function(scope, elm, attrs, ctrl) {
+             ctrl.$validators.integer = function(modelValue, viewValue) { };
+            }
+           };
+         });
+    2.$asyncValidators对象处理异步的验证,添加到这个对象的验证函数必须返回一个promise,在有效时候resolve而无效时候reject,在异步验证的过程中验证的key会
+      被保存到ngModelController.$pending中.
+  6.angularjs实现了所有的html基本控件(input,select,textarea),也可自定义form控件(一般很少用).
+    (为了让自定义的控件可以支持ngModel,并且带有双向绑定,需要实现$render方法,在NgModelController.$formatters之后它负责对数据进行渲染,而且在用户和控件
+     交互之后和模型需要更新时调用$setViewValue方法,通常是由DOM的事件监听器做的($render在$viewValue改变的时候可以重新绑定model数据))
+    JS
+      angular.module('form-example2', []).directive('contenteditable', function() {
+        return {
+          require: 'ngModel',
+          link: function(scope, elm, attrs, ctrl) {
+            (view -> model) elm.on('blur', function() {
+                              ctrl.$setViewValue(elm.html())
+                            });
+            
+            (model -> view) ctrl.$render = function() {
+                              elm.html(ctrl.$viewValue);
+                            };
+            
+            (load init value from DOM) ctrl.$setViewValue(elm.html());
+            }};
+          });)
