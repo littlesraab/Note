@@ -1,0 +1,6 @@
+Module
+  1.module是配置块和运行块的集合.
+    1.配置块(config)在provider的注册和配置阶段执行,只有provider和常量可以注入到配置块,这可以防止在service实例未完全初始化前就使用产生的错误.
+    2.运行块(run)在injector创建之后执行,被用于启动app,只有实例和常量可以注入到运行块,这可以放置在app运行阶段进行系统配置.
+  2.angular.module('myModule', [])将会创建一个名为myModule的模块,如果myModule已存在那么将会重写,就是说重新创建了个新的.
+  3.angular.module('myModule')只会检索已存在的模块.
