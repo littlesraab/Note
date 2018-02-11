@@ -1,0 +1,13 @@
+constant和value
+  1.angularJS可以通过constant(name,value)和value(name,value)创建服务.
+  2.相同点是都可以接受两个参数,name和value.
+  3.区别是constant(name,value)可以将一个已经存在的变量值注册为服务,并将其注入到应用的其他部分中,name为注册的常量的名字,value为注册的常量的值或对象,而
+    value(name,value)的name同样是需要注册的服务名,value将这个值将作为可以注入的实例返回.
+    JS
+      angular.module('myApp').constant('apiKey','123123123') 
+                             .controller('MyController', function($scope, apiKey) { }
+      
+      angular.module('myApp').constant('apiKey',{name:[],age:[],date:[]}) 
+                             .factory('myFactory',function(apiKey,$scope){ }
+  4.最大的区别是constant可以注入到配置函数中而value不行,可以通过value()来注册服务对象或函数,用constant()来配置数据,value不可以在config里注入,但是
+    constant可以,而value可以修改,但是constant不可以修改,一般直接用constant配置一些需要经常使用的数据.
