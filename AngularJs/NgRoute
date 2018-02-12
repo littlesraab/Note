@@ -1,0 +1,24 @@
+ngRoute
+  1.ngRoute包含
+    1.ngView:路由的不同模板其实都是插入这个元素里.
+    2.$routeProvider:路由配置.
+    3.$route:各个路由的url,view,controller.
+    4.$routeParams:路由参数,一般用在controller内.
+  2.ngRoute的基本流程
+    1.在需要路由的地方使用ngView来定义视图模板.
+    2.在module中注入ngRoute模块.
+    3.在config中用$routeProvider来对路由进行配置templateUrl,controller,resolve.
+    4.在每个controller中写业务逻辑.
+    5.在controller中可以通过注入$routeParams来获得url上的参数.
+  3.使用$routeProvider.when来配置路由的关系,方法接受两个参数,第一个参数是url的路径,第二个参数是配置url对应的templateUrl和controller.
+    $routeProvider.otherwise方法相当于default.
+    JS
+      app.config(function ($routeProvider) { 
+           .when("/", {templateUrl: "main.html",controller: 'mainController'}) ($routeProvider)
+           .otherwise('/');});
+  4.resolve是一个map对象.
+    1.map的key是可以注入到controller的可选的依赖项,如果resolve其中依赖项的返回值是promise,在controller初始化之前路由会一直等待直到所有的promise都已
+      经resolved或者其中的一个被rejected,如果所有的promise都成功resolved,这些依赖项将可以注入到controller中并同时触发$routeChangeSuccess事件,如果
+      其中的一个promise是rejected那么将会触发$routeChangeError事件并中止路由切换.
+    2.map的value如果是个字符串,那么它会是一个service的别名,如果是一个函数,他的返回值可以被当做依赖注入到controller中,如果返回值是一个promise,在注入之
+      前必须是resolved的,注意这时候ngRoute.$routeParams还不可用,如果需要使用参数则需要使用$route.current.params.
