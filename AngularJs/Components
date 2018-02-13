@@ -1,0 +1,42 @@
+Components
+  1.在angularjs中Component是一种特殊的directive,它的配置更简单一些.
+  2.Component比普通directive要简单很多,更加严谨更加规范化,更加适合组件化架构,更容易升级到angular2.
+  3.在需要在编译阶段和预链接阶段执行的directive,或需要directive才有定义的选项时,或是需要directive由属性,css的class而不是元素触发时不应使用component.
+  4.Components由angularjs的module使用.component()方法注册,接受2个参数,即Component的名称(字符串类型),Component的配置对象(仅仅是个配置对象).
+  5.Component只能控制它自己的视图和数据,Component不会修改它自身scope之外的任何数据或DOM.
+  6.components不包含compile和pre-link这两个钩子,所以component无法用于操作DOM.
+  7.Component有明确定义的生命周期,每个组件都可以实现lifecycle hooks,这些方法会在component生命周期的相应的点被调用.
+    1.$onInit():在element上所有controller构造和所有的绑定初始化之后,在element之上前缀&的函数链接之前,每个controller调用这个钩子方法是个给controller
+      写一些初始化方法的地方,可以把一个函数赋值给该属性,通常是通过bindings: {} 对象来把需要的数据传递到组件中,使用$onInit来进行一些初始化工作.
+      JS
+        var myComponent = {
+          bindings: {}, 
+          controller: function () {
+             this.$onInit = function() { };
+          }
+        }; 
+        
+        angular.module('app').component('myComponent', myComponent);
+    2.因为不同的生命周期钩子都在组件的不同生命周期被调用,一个组件也可以从另外的组件中继承方法,甚至继承的方法在$onInit钩子中就可以直接使用,.component()
+      方法中require字段后面接对象(只在component中),require可被设置为^^anotherComponent,require值前面^^表示自会在当前组件的父组件中搜寻
+      anotherComponent控制器,(如果require值前面是^那么首先会在当前组件搜寻是否有该控制器,如果没有再在其父组件中搜寻)
+      JS
+        var myComponent = {
+          ... require: {parent: '^^anotherComponent'},....
+      (如果require对象中属性名和require的控制器同名,那么就可以省略控制器名))
+    3.$postLink()当组件及其子组件的元素已经被编译和链接触发的钩子,和post-link函数类似,可以设置DOM事件的处理程序或者直接进行DOM操作,包含templateUrl指
+      令的element不会被编译和链接,因为它们要等template异步加载,它们的编译和链接要等template完成之后才会执行.
+      1.在$postLink函数中并不是一个好的地方用以处理DOM操作,在Angular生态圈外通过原生的事件绑定来为HTML/template扩展行为,Directive依然是最佳选择.
+    4.$onChanges会在组件初始化的时候被调用,组件初始化时会传递最初的changes对象,就可以直接获取到我们所需的数据了,第二种会被调用的场景就是只当单向数据绑
+      定 < 和 @(用于获取DOM特性值,这些值是通过父组件传递的)改变时会被调用(即值在父组件发生变化,触发子组件onChanges).
+      JS
+        var childComponent={
+          ...controller: function(){
+            this.$onChanges=function(changes) {this.user=changes.user.currentValue};
+          }
+        };
+        可通过curentValue来引用到该数据，也就是change对象上面的curentChange属性,也可改为this.user = angular.copy(this.user)(更好))
+    5.若使用了$postLink来设置了DOM事件监听函数或者其他非Angular原生的逻辑,在$onDestroy中你可以把这些事件监听或者非原生逻辑清理干净。   
+  8.directive默认作用域不隔离(scope默认为false),Components默认父子作用域隔离.
+  9.directive当设置scope为对象时属性有三种前缀标示符可以设置,Components的bindings(相当于directive的scope)多了一种"<"(单向数据传输,即父组件改变状
+    态会影响子组件的状态,子组件改变状态不会影响父组件的状态).
