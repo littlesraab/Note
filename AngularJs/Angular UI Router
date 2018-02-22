@@ -1,0 +1,112 @@
+Angular UI Router
+  1.是一个让开发者能够根据URL状态来组织和控制界面UI的渲染,而不是仅仅只改变路由(传统AngularJS应用实用的方式).该模块为开发者提供了很多最视图(view)额外的
+    控制,开发者可以创建嵌套分层的视图、在同一个页面使用多个视图、让多个视图控制某个视图等更多的功能.
+  2.与传统做法使用ng-view不同的是在ngRoute里需要使用ui-view服务,在这些模板中也可以包含自己的ui-view,这就是在同一个路由下实现嵌套视图的方法,要定义一个
+    路由,与传统的方法相同,使用.config,但使用的不是$routeProvider而是$stateProvider.
+    JS
+     .config(function($stateProvider, $urlRouterProvider) {
+       $stateProvider
+         .state('start', {
+           url: '/start',
+           templateUrl: 'project/start.html'
+         })
+     });
+    HTML
+      <div ng-controller="DemoController">
+        <div ui-view></div>
+      </div>
+  3.开发者可以在每个视图下使用如下方式来设置模板.
+    1.- template - HTML字符串.
+    2.返回HTML字符串的函数 - templateUrl - HTML模板的路径.
+    3.返回HTML模板路径的函数 - templateProvider - 返回HTML字符串的函数.
+  4.和ngRoute相似,开发者可以指定任何已经被注册的控制器或者在路由里面创建一个作为控制器的函数,但如果没有定义模板控制器将无效.
+  5.url选项将会为该应用的状态指定一个URL基于用户浏览该应用所在的状态,该选项与ngRoute的URL相似,但可以被视为对ngRoute主要的升级.(当用户浏览到/inbox时,该
+    应用将状态改为inbox同时向主ui-view元素中插入模板中的内容)
+    JS
+      $stateProvider
+      .state('inbox', {
+        url: '/inbox/:inboxId',(url: '/inbox/{inboxId}')
+        template: '<h1>Welcome to your inbox</h1>',
+        controller: function($scope, $stateParams) {
+          $scope.inboxId = $stateParams.inboxId;
+        }
+      });
+     (:inboxId最为URL的第二个部分,如访问/inbox/1,那么$stateParams.inboxId就为1（$stateParams为{inboxId:1})
+  6.使用url参数可以实现嵌套的路由,有了嵌套路由便可在同一个模板同一个路由实现多层次的ui-view.
+    JS
+      .state('inbox.priority', {
+        url: '/priority',
+        template: '<h2>Your priority inbox</h2>'
+      });
+  7.params选项是一个包含路径中的参数和正则表达式匹配结果的数组,该选项不能和url选项混用,当某状态被激活时,应用将这个数组赋值给$stateParams服务.
+  8.开发者可以在一个状态中设置多个有名称的视图,如果设置了视图选项,则该状态的‘template’,‘templateUrl’及‘templateProvider’将被忽略,如果想在路由里包
+    含父级模板,就需要创建一个包含模板的抽象模板.
+    JS
+      $stateProvider
+        .state('inbox', {
+          views: {
+           'filters': {
+              template: '<h4>Filter inbox</h4>',
+              controller: function($scope) {}
+            },
+           'mailbox': {
+             templateUrl: 'partials/mailbox.html'
+            },
+           'priority': {
+             template: '<h4>Priority inbox</h4>',
+             resolve: {
+              facebook: function() {
+              return FB.messages();
+             }
+            }
+           }
+         }
+       });
+     HTML
+       <div>
+         <div ui-view="filters"></div>
+         <div ui-view="mailbox"></div>
+         <div ui-view="priority"></div>
+      </div>
+  9.和ngRoute相同的是angular-route服务会在不同的状态生命周期lifecycle里启动某些事件events,监听$scope对象便可以捕获这些事件然后采取不同的响应或者操
+    作,如下的事件将会在$rootScope上触发,因此在任何$scope对象上都可以监听到这些事件.
+    JS
+      $scope.$on('$stateChangeStart', 
+        function(evt, toState, toParams, fromState, fromParams), {
+          // 如果需要阻止事件的完成
+          evt.preventDefault();
+       });
+  10.视图载入阶段ui-router也提供了一些事件($viewContentLoading(视图加载前),$viewContentLoaded(视图加载后)).
+     JS
+       $scope.$on('$viewContentLoading', 
+         function(event, viewConfig){ 
+          // 获取任何视图设置的参数，以及一个特殊的属性：viewConfig.targetView
+        });
+  11.$stateParams 状态参数
+     url: '/inbox/:inboxId/messages/{sorted}?from&to'
+     //当用户访问者链接时：
+     '/inbox/123/messages/ascending?from=10&to=20'
+     $stateParams对象的值为：
+     {inboxId: '123', sorted: 'ascending', from: 10, to: 20}
+  12.when()需要两个参数
+     1.当前的路径.
+     2.需要重定向到的路径(或者是需要在路径被访问是运行的函数).
+     设置重定向前需要为$urlRouterProvider设置when函数来接受一个字符串
+     JS
+       .config(function($urlRouterProvider) {
+          $urlRouterProvider.when('', '/inbox');
+        });
+  13.开发者可以在该对象上设定特定的URL被激活时做什么的规则,由于设定好的状态在特定的url被访问是会自动激活,所以$urlRouterProvider没有必要用来管理激活
+     和载入状态,但当需要管理哪些被发生在当前状态之外的作用域scope时它会非常有用.(例如在重定向或者安全验证的时候)在模块的设置函数(.config)里便可使用
+     $urlRouterProvider.
+  14.otherwise()和ngRoute的otherwise()函数相似,在用户提交的路径没有被定义的时候它将重定向到指定的页面,是个创建’默认‘路径的好方法,otherwise()只接受
+    一个参数要么函数要么字符串,字符串必须为合法的url路由地址,函数则会在没有任何路径被匹配的时候被运行.
+    JS
+      .config(function($urlRouterProvider) {
+         $urlRouterProvider.otherwise('/');
+        // or
+        $urlRouterProvider.otherwise(
+          function($injector, $location) {
+            $location.path('/');
+          });
+        });
