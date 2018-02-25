@@ -1,0 +1,32 @@
+AJAX
+  1.传输方式.
+    1.异步传输是面向字符传输(单位为字符)(将比特分成字符来传输,一般一组八个字符(一个字符为2比特)),不要求传输/接受方时钟一致,即发送可任何时刻,接收方不知道
+      它何时到达,每个发送小组有一个开始位/停止位,开始位是提醒接收方开始接受(会错过开头几个字符),停止位则告诉传输停止.
+    2.同步传输是面向比特(单位为帧),要求传输方/接受方时钟一致,且同步比异步分组大得多,把字符组合一起发送,而不是每个字符都有开始位/停止位,而这组合为数据帧,
+      类似异步(帧头、数据、帧尾)对应开始位/数据/结束位.
+    3.同步传输比异步快,开销较小,帧中数据增多,开销会相应减小,但缓冲区也会越大,这会限制帧的大小.
+  2.ajax技术是用css/xhtml来表示,用dom来交互和动态显示,用xmlhttpRequest来异步通信,用js来绑定调用的技术.
+    1.xmlhttpRequest对象是ajax用来向服务器发送异步请求,有数据后用js来操作dom,更新页面.
+      1.属性
+        1.onreadystatechange是当xmlhttpRequest对象状态改变触发事件时事件处理程序.
+        2.responseText/responseXML是从服务器返回的数据类型(Text或XML).
+        3.readyState是xmlhttpRequest对象的状态值.
+      2.readyState值
+        1.0为未初始化,但xmlhttpRequest对象已经建立(未调用open()).
+        2.1为初始化,xmlhttpRequest对象已经建立,但未调用send().
+        3.2为发送数据,send()已经调用,但当前状态和http头部未知.
+        4.3为数据传输中,已接收部分数据,但响应和http头不全,获取数据可能会有错误.
+        5.4为完成,接受完毕,可用responseText/responseXML获取数据.
+      3.浏览器差异.
+        1.IE用Window.ActiveXObject(new ActiveXObject(microsoft.XMLHTTP/msxml2.XMLHTTP)).
+        2.其他浏览器用window.xmlhttpRequest(newXmlHttpRequest()).
+      4.过程
+        1.先检查xmlhttpRequest对象的状态且保证它已经完成(readyStatus = 4),即数据发送完毕,后根据服务器的请求状态,若就绪(status = 200),则可以使用
+          xmlhttpRequest对象的方法.
+          1.xmlhttpRequest.open(a,b,c)
+            1.a为向服务提交数据的方式(post或get).
+            2.b为请求的url地址和传递的参数.
+            3.c同步或异步(true或false),默认为异步.
+      5.优缺
+        1.优点是页面无需刷新,不打断用户操作,可把服务器负担转给客户端,减轻服务器负担,减少沉余请求.
+        2.缺点是破坏浏览器的后退机制,存在安全问题等.
