@@ -1,0 +1,30 @@
+JS Patterns
+  1.模式是指反复发生的事件或对象的固定用法,可重复使用的模板或模型(常见问题的通用解决方法).
+  2.对象是指很多属性的集合,一个名值对的列表,属性也可以是函数(函数对象),称为方法.
+  3.构造函数的调用过程(构造函数不用new调用时会创建全局对象的属性)
+    1.创建空的对象,把this指向它,然后继承函数的原型.
+    2.通过this吧属性和方法添加给新函数.
+    3.返回this指向的新对象.
+  4.闭包指能读取其他函数内部变量的函数(将函数内部与外部连接起来).
+    1.可以读取函数内部的变量,也可以让这些变量的值始终保持在内存中.
+    2.闭包内存消耗大,不能滥用.
+  5.柯里化(让函数理解并处理部分应用的过程)
+    JS
+      function schonfinkelize(fn) {
+        var slice = Array.propertype.slice,
+            storedArgs = slice.call(arguments, 1);
+            
+        return function() {
+          var newArgs = slice.call(arguments),
+              args = storedArgs.concat(newArgs);
+          
+          return fn.apply(null, args);
+        };
+      }
+      
+      function add(x,y) {
+        return x + y;
+      }
+      
+      var new = schonfinkelize(add(), 5);
+      new(4); // 9
