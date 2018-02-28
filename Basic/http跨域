@@ -1,0 +1,46 @@
+http跨域
+  1.跨域是指不同域名之间的互相访问(即A网站视图访问B网站),因为要遵守同源策略(要求两个网站协议,域名,端口相同才能提交或获取内容),体现为Cookie,localstorage
+    和IndexDB无法读取,dom无法获取,ajax不能发送.
+    (http:(协议)//www(二域).baidu(一域).com:8000(端口))
+    1.协议/端口的跨域不能通过前端解决.
+    2.方法
+      1.docuemnt.domain + iframe(要主域相同)(iframe为元素,为内联框架),要用document.domian来指明两个文件有相同的域名.
+        JS
+          (www.a.com/a.html)
+          document.domain = 'a.com';
+          var ifr = document.createElement('iframe');
+          ifr.src = 'http://www.script.a.com/b.html';
+          ifr.display = none;
+          document.body.appendChild(ifr);
+          ifr.onload = function(){
+             var doc = ifr.contentDocument || ifr.contentWindow.document;
+             //在这里操作doc，也就是b.html
+             ifr.onload = null;
+          };
+          
+          (www.script.a.com/b.html)
+          document.domain = 'a.com';
+      2.动态创建script,script不受同源策略限制.
+        JS
+          function loadScript(url, func) {
+            var head = document.head || document.getElementByTagName('head')[0];
+            var script = document.createElement('script');
+            
+            script.src = url;
+            script.onload = script.onreadystatechange = function(){
+              if(!this.readyState || this.readyState=='loaded' || this.readyState=='complete'){
+                 func();
+                 script.onload = script.onreadystatechange = null;
+              }
+            };
+            head.insertBefore(script, 0);
+          }
+          
+          window.baidu = {
+            sug: function(data){
+               console.log(data);
+            }
+          }
+          loadScript('http://suggestion.baidu.com/su?wd=w',function(){console.log('loaded')});
+      3.location.hash + iframe,原理是利用location.hash来进行传值.
+      4.window.name + iframe,window.name值在不同的页面(甚至不同域名(加载后依旧存在,并且可以支持非常长的name值(2MB).
